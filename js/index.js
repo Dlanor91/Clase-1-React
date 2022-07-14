@@ -153,3 +153,102 @@ let resultado = f(1, 2); // aqui sobreescribe los parametros depende la posicion
 console.log("resultado", resultado);
 
 //sobrecarga, tiene el mismo nombre pero sabe a quien llama depende del tipo de parametro que usa
+
+//para el spread
+const arreglo8 = ["a", "b", "c"];
+const reducer4 = (acumulador, valorActual) => acumulador.concat(valorActual);
+console.log(arreglo8.reduce(reducer4, [])); //aqui concateno todo, los [] van dentro de la , sino no sale
+
+//desestructurar como usar el push, no puede tener el return en el push entonces debo si o si ponerlo despues
+const reducer5 = (acumulador, valorActual) => {
+  console.log("acumulador", acumulador);
+  acumulador.push(valorActual);
+  return acumulador;
+};
+console.log(arreglo8.reduce(reducer5, []));
+
+//parametros rest los ...nombres es que para cada parametro admite mas de uno y debe ser el ultimo parametro
+const armarSaludo = (saludo, finSaludo, ...nombres) => {
+  console.log(saludo, finSaludo, nombres);
+  nombres.forEach((nombre) => console.log(`${saludo} ${nombre} ${finSaludo}`));
+};
+armarSaludo("Hola", "bienvenido", "Jose", "Pedro", "Roberto");
+//otro ejemplo pero desestructurado
+const armarSaludo2 = (...nombres) => {
+  let [primerNombre, segundoNombre] = nombres;
+  console.log(`Nombres: ${primerNombre} , ${segundoNombre}`);
+};
+armarSaludo2("Jose"); //aqui solo tiene un elemento el arreglo y por ende da error
+
+//spread permite usar los objetos de forma iterable, para que use los datos del arreglo
+const sum = (x, y, z) => x + y + z;
+
+const numbers = [1, 2, 3];
+console.log(sum(...numbers));
+
+//spread al realizar una copia con el = te apunta a el mismo lugar(apunta al mismo puntero) y luego modificar la copia el original se ve afectado
+const arreglo9 = ["a", "b", "c"];
+const arreglo10 = arreglo9; //esto esta mal, se debe usar spread y esparcirlo. es una copia por referencia
+arreglo9.push("d");
+console.log(`${arreglo9} , ${arreglo10}`);
+
+const arreglo11 = ["a", "b", "c"];
+const arreglo12 = [...arreglo11]; //esto es una copia en profundidad o sea son independientes
+arreglo11.push("d");
+console.log(`${arreglo11} , ${arreglo12}`);
+
+//tambien traduce una cadena y la descontruye
+//A partir de un arreglo se puedo obtener una cadena continua
+const items = ["This", "is", "a", "sentence"];
+console.log(items); // [ 'This', 'is', 'a','sentence' ]
+console.log(...items); // This is a sentence es lo q devuelve y los espacios es porq separa los valores
+
+//spread en objetos te permite clonar
+let addams = { nombre: "Homero", apellido: "Addams" };
+let simpsons = { apellido: "Simpsons", edad: 38 };
+//se realiza una copia del objeto
+let addamsClonado = { ...addams };
+console.log(addamsClonado);
+let mergedFamilias = { ...addams, ...simpsons }; //aqui sobreescribe los campos iguales y se aueda con el ultimo por eso el apellido aqui lo sobreescribe
+console.log(mergedFamilias);
+
+//clases el this se usa para desambiguar cual es parametro y cual es de objeto(sin this) sino usas la misma variable
+class Vehiculo {
+  constructor(marca, modelo, anio) {
+    this.marca = marca;
+    this.modelo = modelo;
+    this.anio = anio;
+  }
+  obtenerDatos() {
+    return `marca:${this.marca}, modelo: ${this.modelo}, anio: ${this.anio}`;
+  }
+  saludar() {
+    console.log("Hola soy un vehículo");
+  }
+}
+
+class Auto extends Vehiculo {
+  //el extends es para usar clases hijos
+  constructor(marca, modelo, anio, numPuertas) {
+    super(marca, modelo, anio);
+    this.numPuertas = numPuertas;
+  }
+  //se sobreescribe el método heredado
+  obtenerDatos() {
+    let metodoHeredado = super.obtenerDatos(); //super es del padre por eso usa super
+    return `${metodoHeredado}, puertas:${this.numPuertas}`; //el this es referido al auto en este caso
+  }
+  queSoy() {
+    console.log("Soy un auto");
+  }
+  modificarPuertas(puertas) {
+    this.numPuertas = puertas;
+  }
+}
+
+const auto = new Auto("Nissan", "Versa", 2019, 5);
+auto.saludar();
+auto.queSoy();
+console.log(auto.obtenerDatos());
+auto.modificarPuertas(4);
+console.log(auto.obtenerDatos());
